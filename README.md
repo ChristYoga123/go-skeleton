@@ -2,67 +2,74 @@
 
 Skeleton project untuk aplikasi Go dengan Fiber framework, GORM, dan support multiple database (MySQL, PostgreSQL, SQLite).
 
-## 📋 Table of Contents
+## 📋 Daftar Isi
 
-- [Features](#features)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [Environment Variables](#environment-variables)
-- [Database Setup](#database-setup)
-- [Migration](#migration)
-- [Best Practices](#best-practices)
-- [API Response Standard](#api-response-standard)
+- [Fitur](#-fitur)
+- [Struktur Project](#-struktur-project)
+- [Memulai](#-memulai)
+- [Environment Variables](#-environment-variables)
+- [Setup Database](#-setup-database)
+- [Migration](#-migration)
+- [Best Practices](#-best-practices)
+- [Standar Response API](#-standar-response-api)
+- [Autentikasi](#-autentikasi)
+- [Password Hashing](#-password-hashing)
+- [Development](#️-development)
+- [Dependencies](#-dependencies)
 
-## ✨ Features
+## ✨ Fitur
 
 - 🚀 **Fiber Framework** - Fast HTTP web framework
 - 🗄️ **Multi-Database Support** - MySQL, PostgreSQL, SQLite
-- 🔄 **Auto Database Creation** - Automatically creates database if not exists (like Laravel)
-- 🔐 **JWT Authentication** - JWT token generation and verification
+- 🔄 **Auto Database Creation** - Otomatis membuat database jika belum ada (seperti Laravel)
+- 🔐 **JWT Authentication** - Generate dan verifikasi JWT token
 - 🔒 **Password Hashing** - Bcrypt password hashing
-- 📦 **Clean Architecture** - Repository, Service, Controller pattern
+- 📦 **Clean Architecture** - Pattern Repository, Service, Controller
 - 📝 **Auto Migration** - GORM auto migration
-- 🎯 **Standardized Response** - Base response for API consistency
+- 🎯 **Standardized Response** - Base response untuk konsistensi API
 
-## 📁 Project Structure
+## 📁 Struktur Project
 
 ```
 golang-skeleton/
 ├── app/
-│   ├── controllers/          # HTTP handlers/controllers
+│   ├── commands/             # CLI commands
+│   ├── controllers/           # HTTP handlers/controllers
 │   ├── entities/
 │   │   ├── dtos/
-│   │   │   ├── requests/     # Request DTOs
-│   │   │   └── responses/    # Response DTOs (BaseResponse)
-│   │   └── models/           # GORM models
-│   ├── repositories/         # Data access layer
-│   └── services/             # Business logic layer
+│   │   │   ├── requests/      # Request DTOs
+│   │   │   └── responses/     # Response DTOs (BaseResponse)
+│   │   └── models/            # GORM models
+│   ├── repositories/          # Data access layer
+│   └── services/              # Business logic layer
 ├── cmd/
-│   └── api/
-│       └── main.go          # Application entry point
-├── configs/                  # Configuration files
-│   ├── bcrypt.go            # Password hashing
-│   ├── database.go          # Database connection
-│   ├── env_config.go        # Environment variables
-│   └── jwt.go               # JWT utilities
+│   ├── api/
+│   │   └── main.go           # Entry point aplikasi
+│   └── cli/
+│       └── main.go           # Entry point CLI
+├── configs/                   # File konfigurasi
+│   ├── bcrypt.go             # Password hashing
+│   ├── database.go            # Koneksi database
+│   ├── env_config.go          # Environment variables
+│   └── jwt.go                 # JWT utilities
 ├── database/
-│   ├── auto_migrate.go      # Auto migration setup
-│   └── database.sqlite      # SQLite database file (if using SQLite)
+│   ├── auto_migrate.go        # Setup auto migration
+│   └── database.sqlite        # File database SQLite (jika menggunakan SQLite)
 ├── routes/
-│   └── api.go               # API routes
-└── tests/                   # Test files
+│   └── api.go                 # API routes
+└── tests/                     # File test
 ```
 
-## 🚀 Getting Started
+## 🚀 Memulai
 
 ### Prerequisites
 
-- Go 1.25.4 or higher
-- MySQL/PostgreSQL (optional, if not using SQLite)
+- Go 1.25.4 atau lebih tinggi
+- MySQL/PostgreSQL (opsional, jika tidak menggunakan SQLite)
 
-### Installation
+### Instalasi
 
-1. Clone the repository
+1. Clone repository
 ```bash
 git clone <repository-url>
 cd golang-skeleton
@@ -73,40 +80,40 @@ cd golang-skeleton
 go mod download
 ```
 
-3. Copy environment file
+3. Copy file environment
 ```bash
 cp .env.example .env
 ```
 
-4. Configure environment variables (see [Environment Variables](#environment-variables))
+4. Konfigurasi environment variables (lihat [Environment Variables](#-environment-variables))
 
-5. Run the application
+5. Jalankan aplikasi
 ```bash
 go run cmd/api/main.go
 ```
 
-The server will start on `http://localhost:8000` (or port specified in `APP_PORT`)
+Server akan berjalan di `http://localhost:8000` (atau port yang ditentukan di `APP_PORT`)
 
 ## 🔧 Environment Variables
 
-Create a `.env` file in the root directory with the following variables:
+Buat file `.env` di root directory dengan variabel berikut:
 
-### Application Configuration
+### Konfigurasi Aplikasi
 
 ```env
 APP_PORT=8000
 ```
 
-### Database Configuration
+### Konfigurasi Database
 
-#### Option 1: Using SQLite (Default)
+#### Opsi 1: Menggunakan SQLite (Default)
 
 ```env
 DB_DRIVER=sqlite
 DB_PATH=database/database.sqlite
 ```
 
-#### Option 2: Using MySQL
+#### Opsi 2: Menggunakan MySQL
 
 ```env
 DB_DRIVER=mysql
@@ -117,13 +124,13 @@ DB_PASSWORD=your_password
 DB_DATABASE=myapp_db
 ```
 
-**Or using DB_URL:**
+**Atau menggunakan DB_URL:**
 ```env
 DB_DRIVER=mysql
 DB_URL=user:password@tcp(localhost:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local
 ```
 
-#### Option 3: Using PostgreSQL
+#### Opsi 3: Menggunakan PostgreSQL
 
 ```env
 DB_DRIVER=postgres
@@ -135,35 +142,40 @@ DB_DATABASE=myapp_db
 DB_SSLMODE=disable
 ```
 
-**Or using DB_URL:**
+**Atau menggunakan DB_URL:**
 ```env
 DB_DRIVER=postgres
 DB_URL=host=localhost user=postgres password=password dbname=myapp_db port=5432 sslmode=disable
 ```
 
-### JWT Configuration
+### Konfigurasi JWT
 
 ```env
-JWT_SECRET=your-secret-key-change-this-in-production
+JWT_SECRET="your-secret-key-change-this-in-production"
 ```
 
-## 🗄️ Database Setup
+**Gunakan CLI untuk generate JWT secret:**
+```bash
+go run cmd/cli/main.go generate-jwt-secret
+```
+
+## 🗄️ Setup Database
 
 ### Auto Database Creation
 
-The application automatically creates the database if it doesn't exist (for MySQL and PostgreSQL), similar to Laravel's behavior.
+Aplikasi secara otomatis membuat database jika belum ada (untuk MySQL dan PostgreSQL), mirip dengan behavior Laravel.
 
-**How it works:**
-1. Application connects to the database server (without specifying database name)
-2. Checks if the database exists
-3. Creates the database if it doesn't exist
-4. Connects to the created database
+**Cara kerjanya:**
+1. Aplikasi connect ke database server (tanpa specify nama database)
+2. Cek apakah database sudah ada
+3. Buat database jika belum ada
+4. Connect ke database yang sudah dibuat
 
-**Note:** Make sure the database user has `CREATE DATABASE` privileges.
+**Catatan:** Pastikan database user memiliki privilege `CREATE DATABASE`.
 
 ### Manual Database Creation
 
-If you prefer to create the database manually:
+Jika ingin membuat database secara manual:
 
 **MySQL:**
 ```sql
@@ -177,13 +189,13 @@ CREATE DATABASE myapp_db;
 
 ## 🔄 Migration
 
-### Adding New Models
+### Menambah Model Baru
 
-To add a new model and include it in auto-migration:
+Untuk menambah model baru dan memasukkannya ke auto-migration:
 
-1. **Create a new model file** in `app/entities/models/`
+1. **Buat file model baru** di `app/entities/models/`
 
-Example: `app/entities/models/product.go`
+Contoh: `app/entities/models/product.go`
 ```go
 package models
 
@@ -198,34 +210,34 @@ type Product struct {
 }
 ```
 
-2. **Add the model to auto-migration** in `database/auto_migrate.go`
+2. **Tambahkan model ke auto-migration** di `database/auto_migrate.go`
 
 ```go
 func AutoMigrate(db *gorm.DB) error {
     return db.AutoMigrate(
         &models.User{},
-        &models.Product{},  // Add your new model here
+        &models.Product{},  // Tambahkan model baru di sini
         // ... tambahkan model lainnya di sini
     )
 }
 ```
 
-3. **Restart the application** - Migration will run automatically on startup
+3. **Restart aplikasi** - Migration akan berjalan otomatis saat startup
 
-### Migration Best Practices
+### Best Practices Migration
 
-- Always add new models to `AutoMigrate()` function
-- GORM will automatically:
-  - Create new tables
-  - Add new columns
-  - Create indexes
-  - **Note:** GORM won't delete columns or tables automatically (for safety)
+- Selalu tambahkan model baru ke function `AutoMigrate()`
+- GORM akan otomatis:
+  - Membuat tabel baru
+  - Menambah kolom baru
+  - Membuat index
+  - **Catatan:** GORM tidak akan menghapus kolom atau tabel secara otomatis (untuk keamanan)
 
 ## 📝 Best Practices
 
-### 1. Use BaseResponse for API Responses
+### 1. Gunakan BaseResponse untuk Response API
 
-Always use `BaseResponse` for standardized API responses:
+Selalu gunakan `BaseResponse` untuk standarisasi response API:
 
 ```go
 import "golang-skeleton/app/entities/dtos/responses"
@@ -233,65 +245,65 @@ import "net/http"
 
 // Success response
 return c.JSON(responses.NewSuccessResponse(
-    "Data retrieved successfully",
+    "Data berhasil diambil",
     data,
     http.StatusOK,
 ))
 
 // Error response
 return c.JSON(responses.NewErrorResponse(
-    "Validation failed",
+    "Validasi gagal",
     nil,
     http.StatusBadRequest,
 ))
 ```
 
-**Response Format:**
+**Format Response:**
 ```json
 {
   "code": 200,
-  "message": "Success message",
+  "message": "Pesan sukses",
   "data": { ... }
 }
 ```
 
-### 2. Project Architecture Pattern
+### 2. Pattern Arsitektur Project
 
-Follow the clean architecture pattern:
+Ikuti pattern clean architecture:
 
 ```
 Controller → Service → Repository → Database
 ```
 
-- **Controller**: Handle HTTP requests/responses
+- **Controller**: Handle HTTP request/response
 - **Service**: Business logic
 - **Repository**: Data access layer
 - **Model**: Database models
 
 ### 3. Error Handling
 
-- Always return proper HTTP status codes
-- Use `BaseResponse` for error responses
-- Log errors appropriately
+- Selalu return HTTP status code yang tepat
+- Gunakan `BaseResponse` untuk error response
+- Log error dengan tepat
 
 ### 4. Environment Variables
 
-- Never commit `.env` file (already in `.gitignore`)
-- Use `GetEnv()` for required variables (returns error if not set)
-- Use `GetEnvOrDefault()` for optional variables with defaults
+- Jangan commit file `.env` (sudah ada di `.gitignore`)
+- Gunakan `GetEnv()` untuk variabel yang wajib (return error jika tidak diset)
+- Gunakan `GetEnvOrDefault()` untuk variabel opsional dengan default value
 
-## 📊 API Response Standard
+## 📊 Standar Response API
 
-All API responses follow this standard format:
+Semua response API mengikuti format standar ini:
 
 ### Success Response
 
 ```json
 {
   "code": 200,
-  "message": "Operation successful",
+  "message": "Operasi berhasil",
   "data": {
-    // Response data
+    // Data response
   }
 }
 ```
@@ -301,12 +313,12 @@ All API responses follow this standard format:
 ```json
 {
   "code": 400,
-  "message": "Error message",
+  "message": "Pesan error",
   "data": null
 }
 ```
 
-### Available Status Codes
+### Status Code yang Tersedia
 
 - `200` - OK (Success)
 - `201` - Created
@@ -316,7 +328,7 @@ All API responses follow this standard format:
 - `404` - Not Found
 - `500` - Internal Server Error
 
-Use HTTP status constants:
+Gunakan HTTP status constants:
 ```go
 import "net/http"
 
@@ -324,9 +336,9 @@ responses.NewSuccessResponse("Success", data, http.StatusOK)
 responses.NewErrorResponse("Not found", nil, http.StatusNotFound)
 ```
 
-## 🔐 Authentication
+## 🔐 Autentikasi
 
-### JWT Token Generation
+### Generate JWT Token
 
 ```go
 import "golang-skeleton/configs"
@@ -334,7 +346,7 @@ import "golang-skeleton/configs"
 token, err := configs.GenerateJWT(userID, email)
 ```
 
-### JWT Token Verification
+### Verifikasi JWT Token
 
 ```go
 claims, err := configs.VerifyJWT(tokenString)
@@ -345,7 +357,7 @@ userID := claims.UserID
 email := claims.Email
 ```
 
-### Get User ID from Token
+### Ambil User ID dari Token
 
 ```go
 userID, err := configs.GetIDFromToken(tokenString)
@@ -366,7 +378,7 @@ hashedPassword, err := configs.HashPassword("plain_password")
 ```go
 err := configs.ComparePassword("plain_password", hashedPassword)
 if err != nil {
-    // Password doesn't match
+    // Password tidak cocok
 }
 ```
 
@@ -388,22 +400,22 @@ go run cmd/cli/main.go generate-jwt-secret
 
 Command ini akan:
 - Generate secure random JWT secret (32 bytes, base64 encoded)
-- Add `JWT_SECRET` to `.env` file if not exists
-- Update `JWT_SECRET` value if already exists
+- Menambahkan `JWT_SECRET` ke file `.env` jika belum ada
+- Update value `JWT_SECRET` jika sudah ada
 
-### Running the Application
+### Menjalankan Aplikasi
 
 ```bash
 go run cmd/api/main.go
 ```
 
-### Building the Application
+### Build Aplikasi
 
 ```bash
 go build -o bin/api cmd/api/main.go
 ```
 
-### Running Tests
+### Menjalankan Test
 
 ```bash
 go test ./...
@@ -411,22 +423,10 @@ go test ./...
 
 ## 📦 Dependencies
 
-Main dependencies:
+Dependencies utama:
 - **Fiber v2** - Web framework
 - **GORM v1** - ORM
 - **JWT v5** - JWT authentication
 - **Bcrypt** - Password hashing
 - **Godotenv** - Environment variables
-
-## 📄 License
-
-[Your License Here]
-
-## 🤝 Contributing
-
-[Your Contributing Guidelines Here]
-
-## 📞 Support
-
-[Your Support Information Here]
-
+- **Cobra** - CLI framework
